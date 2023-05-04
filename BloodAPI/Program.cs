@@ -1,6 +1,9 @@
 using BloodAPI.Data;
+using BloodAPI.Email;
+using BloodAPI.Email.EmailService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Configuration;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +31,8 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
+
+builder.Services.AddScoped<IMailService, MailService>();
 
 var app = builder.Build();
 
