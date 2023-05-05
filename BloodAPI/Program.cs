@@ -1,9 +1,7 @@
 using BloodAPI.Data;
-using BloodAPI.Email;
-using BloodAPI.Email.EmailService;
+using BloodAPI.Notifications;
+using BloodAPI.Notifications.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +30,10 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
-builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<INotificationService, MailService>();
+builder.Services.AddScoped<INotificationService, SMSService>();
+
+builder.Services.AddScoped<INotificationServiceFactory, NotificationFactory>();
 
 var app = builder.Build();
 

@@ -1,24 +1,24 @@
-﻿using MailKit.Net.Smtp;
+﻿using BloodAPI.Notifications.DTOs;
+using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
 
-namespace BloodAPI.Email.EmailService
+namespace BloodAPI.Notifications.Services
 {
-    public class MailService : IMailService
+    public class MailService : INotificationService
     {
         private readonly IConfiguration _config;
-        public MailService(IConfiguration config) 
+        public MailService(IConfiguration config)
         {
             _config = config;
         }
-        public void SendEmail(MailDto request)
+        public void SendNotification(NotificationDto request)
         {
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse("lenore.smitham@ethereal.email"));
             email.To.Add(MailboxAddress.Parse(request.To));
-            email.Subject = request.Subject;
+            email.Subject = request.FromSubject;
             email.Body = new TextPart(TextFormat.Html) { Text = request.Body };
 
             using var smtp = new SmtpClient();
