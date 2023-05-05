@@ -1,6 +1,7 @@
 using BloodAPI.Data;
 using BloodAPI.Notifications;
 using BloodAPI.Notifications.Services;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -35,6 +36,15 @@ builder.Services.AddScoped<INotificationService, SMSService>();
 
 builder.Services.AddScoped<INotificationServiceFactory, NotificationFactory>();
 
+builder.Services.AddHangfire(configuration => {
+    configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                 .UseSimpleAssemblyNameTypeSerializer()
+                 .UseRecommendedSerializerSettings()
+                 .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"));
+});
+
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,5 +66,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseCors("AllowAll");
+
+app.UseHangfireDashboard();
 
 app.Run();

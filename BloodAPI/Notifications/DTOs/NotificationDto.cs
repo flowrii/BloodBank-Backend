@@ -6,5 +6,7 @@
         public string FromSubject { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
         public string NotificationType { get; set; } = string.Empty;
+        public int AppointmentId { get; set; }
+        public DateTime Date { get; set; }
     }
 }

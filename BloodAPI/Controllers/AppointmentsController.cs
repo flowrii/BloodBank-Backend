@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using BloodAPI.Data;
+using BloodAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BloodAPI.Data;
-using BloodAPI.Models;
 
 namespace BloodAPI.Controllers
 {
@@ -25,10 +20,10 @@ namespace BloodAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointments()
         {
-          if (_context.Appointments == null)
-          {
-              return NotFound();
-          }
+            if (_context.Appointments == null)
+            {
+                return NotFound();
+            }
             return await _context.Appointments.ToListAsync();
         }
 
@@ -58,10 +53,10 @@ namespace BloodAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Appointment>> GetAppointment(int id)
         {
-          if (_context.Appointments == null)
-          {
-              return NotFound();
-          }
+            if (_context.Appointments == null)
+            {
+                return NotFound();
+            }
             var appointment = await _context.Appointments.FindAsync(id);
 
             if (appointment == null)
@@ -108,10 +103,10 @@ namespace BloodAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Appointment>> PostAppointment(Appointment appointment)
         {
-          if (_context.Appointments == null)
-          {
-              return Problem("Entity set 'BloodContext.Appointments'  is null.");
-          }
+            if (_context.Appointments == null)
+            {
+                return Problem("Entity set 'BloodContext.Appointments'  is null.");
+            }
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
 
