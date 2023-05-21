@@ -51,6 +51,24 @@ namespace BloodAPI.Controllers
             return donor;
         }
 
+        // GET: api/Donors/5
+        [HttpGet("name/{id}")]
+        public async Task<ActionResult<string>> GetDonorName(int id)
+        {
+            if (_context.Donors == null)
+            {
+                return NotFound();
+            }
+            var donor = await _context.Donors.FindAsync(id);
+
+            if (donor == null)
+            {
+                return NotFound();
+            }
+
+            return donor.FirstName + " " + donor.LastName;
+        }
+
         // GET: api/Donor/username/{username}
         [HttpGet("username/{username}")]
         public async Task<ActionResult<Donor>> GetDonorByUsername(string username)

@@ -28,15 +28,34 @@ namespace BloodAPI.Controllers
         }
 
         // GET: api/Appointments
-        [HttpGet("donationCenter/{donationCenterID}")]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByDonationC(int donationCenterID)
+        [HttpGet("donationCenter/{donationCenterID}/{position}")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByDonationC(int donationCenterID, int position)
         {
             if (_context.Appointments == null)
             {
                 return NotFound();
             }
-            return await _context.Appointments.Where(a => a.DonationCenterID == donationCenterID).ToListAsync();
+            var nextPage = _context.Appointments
+                .Where(a => a.DonationCenterID == donationCenterID)
+                .OrderBy(b => b.Date)
+                .Skip(position)
+                .Take(3)
+                .ToListAsync();
+            return await nextPage;
+            //return await _context.Appointments.Where(a => a.DonationCenterID == donationCenterID).ToListAsync();
         }
+
+        [HttpGet("donationCenterApp/{donationCenterID}")]
+        public async Task<ActionResult<int>> GetNumAppointmentsByDonationC(int donationCenterID)
+        {
+            if (_context.Appointments == null)
+            {
+                return NotFound();
+            }
+            
+            return await _context.Appointments.Where(a => a.DonationCenterID == donationCenterID).CountAsync();
+        }
+
 
         // GET: api/Appointments/userid/{userid}
         [HttpGet("userid/{userID}")]
@@ -47,6 +66,22 @@ namespace BloodAPI.Controllers
                 return NotFound();
             }
             return await _context.Appointments.Where(a => a.DonorID == userID).ToListAsync();
+        }
+
+        [HttpGet("nextAppointment/{userID}")]
+        public async Task<ActionResult<Appointment>> GetNextAppointment(int userID)
+        {
+            if (_context.Appointments == null)
+            {
+                return NotFound(); 
+            }
+            List<Appointment> appointments = await _context.Appointments.Where(a => a.DonorID == userID).ToListAsync();
+            var sortedList = appointments.OrderBy(o => o.Date).ToList();
+
+            Appointment app = sortedList.Last();
+            app.Date = app.Date.AddMonths(1);
+
+            return app;
         }
 
         // GET: api/Appointments/5
